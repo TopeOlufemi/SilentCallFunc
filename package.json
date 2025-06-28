@@ -1,0 +1,10 @@
+{
+  "name": "silentcall",
+  "version": "1.0.0",
+  "dependencies": {
+    "@microsoft/microsoft-graph-client": "^4.0.0",
+    "isomorphic-fetch": "^3.0.0",
+    "node-fetch": "^2.6.1",
+    "querystring": "^0.2.1"
+  }
+}
