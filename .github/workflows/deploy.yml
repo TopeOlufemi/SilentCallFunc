@@ -18,9 +18,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Run npm install (optional)
-        run: npm install
-        working-directory: .
+      # Removed npm install step — not needed
 
       - name: Deploy to Azure Functions
         uses: Azure/functions-action@v1
