@@ -1,12 +1,13 @@
 {
+  "scriptFile": "index.js",
   "bindings": [
     {
       "authLevel": "function",
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
-      "methods": ["get", "post"],  // ✅ Add "post" here
-      "route": null
+      "methods": [ "post", "get" ],
+      "route": "SilentCall"
     },
     {
       "type": "http",
@@ -15,4 +16,5 @@
     }
   ]
 }
+
 
