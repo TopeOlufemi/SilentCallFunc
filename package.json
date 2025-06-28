@@ -1,10 +1,14 @@
 {
-  "name": "silentcall",
+  "name": "silentcallfunc",
   "version": "1.0.0",
+  "description": "Azure Function that sends a silent missed-call Teams message",
+  "main": "index.js",
+  "license": "MIT",
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^4.0.0",
+    "@microsoft/microsoft-graph-client": "^3.0.3",
     "isomorphic-fetch": "^3.0.0",
     "node-fetch": "^2.6.1",
     "querystring": "^0.2.1"
   }
 }
+
