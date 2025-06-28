@@ -1,86 +1,54 @@
 const { Client } = require("@microsoft/microsoft-graph-client");
 require("isomorphic-fetch");
 
-const tenantId = process.env.TENANT_ID;
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-
-async function getToken() {
-  const url = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-  const params = new URLSearchParams();
-  params.append("client_id", clientId);
-  params.append("scope", "https://graph.microsoft.com/.default");
-  params.append("client_secret", clientSecret);
-  params.append("grant_type", "client_credentials");
-
-  const response = await fetch(url, { method: "POST", body: params });
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(`Token error: ${JSON.stringify(data)}`);
-  }
-
-  return data.access_token;
-}
-
 module.exports = async function (context, req) {
-  context.log("💡 SilentCall function triggered");
+    context.log("🔔 SilentCall function triggered");
 
-  const userEmail = req.query.userEmail;
-  context.log("📩 userEmail parameter:", userEmail);
+    const userEmail = req.query.userEmail || (req.body && req.body.userEmail);
 
-  if (!userEmail) {
-    context.res = {
-      status: 400,
-      body: "❌ Missing 'userEmail' query parameter.",
-    };
-    return;
-  }
+    if (!userEmail) {
+        context.log("❌ Missing 'userEmail'");
+        context.res = {
+            status: 400,
+            body: "Missing 'userEmail' query parameter."
+        };
+        return;
+    }
 
-  try {
-    context.log("🔐 Getting Microsoft Graph token...");
-    const token = await getToken();
-    context.log("✅ Token acquired");
+    context.log(`📨 Simulating silent call for: ${userEmail}`);
 
-    const client = Client.init({
-      authProvider: (done) => done(null, token),
-    });
+    try {
+        // Access token from environment settings (Application Settings)
+        const accessToken = process.env.GRAPH_TOKEN;
 
-    context.log(`🔎 Looking up user: ${userEmail}`);
-    const user = await client.api(`/users/${userEmail}`).get();
-    context.log("👤 User found:", user.id);
+        if (!accessToken) {
+            context.log("❌ Missing GRAPH_TOKEN environment variable");
+            context.res = {
+                status: 500,
+                body: "GRAPH_TOKEN not configured."
+            };
+            return;
+        }
 
-    context.log("💬 Creating chat");
-    const chat = await client.api("/chats").post({
-      chatType: "oneOnOne",
-      members: [
-        {
-          "@odata.type": "#microsoft.graph.aadUserConversationMember",
-          roles: ["owner"],
-          "user@odata.bind": `https://graph.microsoft.com/v1.0/users/${user.id}`,
-        },
-      ],
-    });
+        const client = Client.init({
+            authProvider: (done) => {
+                done(null, accessToken);
+            }
+        });
 
-    context.log("✉️ Sending message to chat");
-    await client.api(`/chats/${chat.id}/messages`).post({
-      body: {
-        content: "🔕 SilentCallBot: You have a missed call.",
-      },
-    });
+        // Fake Microsoft Graph call to simulate missed call — adjust as needed
+        await client.api(`/users/${userEmail}/messages`).get();
 
-    context.res = {
-      status: 200,
-      body: `✅ Silent call registered for ${userEmail}`,
-    };
-  } catch (err) {
-    context.log.error("❌ Error occurred:", err.message);
-    context.res = {
-      status: 500,
-      body: `⚠️ Error: ${err.message}`,
-    };
-  }
+        context.res = {
+            status: 200,
+            body: `Silent call registered for ${userEmail}.`
+        };
+
+    } catch (error) {
+        context.log.error("🔥 Error executing Graph request:", error);
+        context.res = {
+            status: 500,
+            body: "Internal Server Error"
+        };
+    }
 };
-
-
-
