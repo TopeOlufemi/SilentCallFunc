@@ -4,6 +4,10 @@
   "description": "Azure Function that sends a silent missed-call Teams message",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "func start",
+    "build": "echo \"No build step required for plain JS\""
+  },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^3.0.3",
     "isomorphic-fetch": "^3.0.0",
@@ -11,4 +15,3 @@
     "querystring": "^0.2.1"
   }
 }
-
