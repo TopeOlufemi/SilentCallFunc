@@ -4,7 +4,7 @@
     if (!userEmail) {
         context.res = {
             status: 400,
-            body: "Missing \'userEmail\' query parameter."
+            body: "Missing 'userEmail' query parameter."
         };
         return;
     }
