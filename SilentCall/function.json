@@ -1,5 +1,4 @@
 {
-  "scriptFile": "index.js",
   "bindings": [
     {
       "authLevel": "function",
@@ -13,8 +12,10 @@
       "direction": "out",
       "name": "res"
     }
-  ]
+  ],
+  "scriptFile": "index.js"
 }
+
 
 
 
